@@ -1,0 +1,178 @@
+{% extends 'main/base.html' %}
+{% block navbar %}
+{% endblock %}
+{% block title %}Bookings - Admin{% endblock %}
+{% block content %}
+
+<!-- Admin Header -->
+<div style="background: linear-gradient(135deg, #1a3d1e, #234f24); padding: 2rem 0; margin-bottom: 2rem;">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 style="color: white; margin: 0; font-weight: 700; font-size: 2rem;">🎟️ Ticket Bookings</h2>
+        <p style="color: rgba(255,255,255,0.8); margin: 0.5rem 0 0 0;">View all visitor bookings and tickets</p>
+      </div>
+      <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-light" style="border-radius: 25px; padding: 0.7rem 2rem;">
+        ← Back to Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <!-- Stats Card -->
+  <div style="background: linear-gradient(135deg, #1a3d1e, #234f24); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; color: white; box-shadow: 0 10px 30px rgba(67,233,123,0.2);">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="font-size: 2.5rem;">📊</div>
+      <div>
+        <h4 style="margin: 0 0 0.3rem 0;">Total Bookings: {{ tickets|length }}</h4>
+        <p style="margin: 0; opacity: 0.95;">All ticket bookings in the system</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookings Table -->
+  <div class="admin-table-container">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th style="width: 100px;">Ticket ID</th>
+          <th>Visitor Name</th>
+          <th>Visit Date</th>
+          <th>Package</th>
+          <th>Visitor Count</th>
+          <th>Payment</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ticket in tickets %}
+        <tr>
+          <td><span class="badge-ticket">#{{ ticket.ticket_id }}</span></td>
+          <td><strong>{{ ticket.visitor.visitor_name }}</strong></td>
+          <td>
+            <span style="color: #667eea; font-weight: 500;">
+              {{ ticket.visit_date|date:"M d, Y" }}
+            </span>
+          </td>
+          <td>
+            {% if ticket.package %}
+              {{ ticket.package.package_name }}
+            {% else %}
+              <span style="color: #999;">No package</span>
+            {% endif %}
+          </td>
+          <td>
+            <span class="badge-count">{{ ticket.visitor_count|default:"1" }} 
+            {% if ticket.visitor_count == 1 %}person{% else %}people{% endif %}
+            </span>
+          </td>
+          <td>
+            <span class="badge-payment">{{ ticket.payment_mode|default:"N/A" }}</span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 3rem; color: #999;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🎫</div>
+            No bookings found.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Additional Info -->
+  <div style="margin-top: 2rem; padding: 1.5rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 10px;">
+    <strong style="color: #856404;">💡 Tip:</strong>
+    <span style="color: #856404;"> You can click on visitor names to see their contact details and booking history.</span>
+  </div>
+</div>
+
+<style>
+.admin-table-container {
+  background: white;
+  border-radius: 15px;
+  overflow-x: auto;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  min-width: 800px;
+}
+
+.admin-table thead {
+  background: linear-gradient(135deg, #1a3d1e, #234f24);
+}
+
+.admin-table thead th {
+  padding: 1.2rem 1.5rem;
+  text-align: left;
+  font-weight: 600;
+  color: white;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.admin-table tbody tr:hover {
+  background: #f0fff4;
+  transform: scale(1.01);
+}
+
+.admin-table tbody td {
+  padding: 1.2rem 1.5rem;
+  color: #333;
+}
+
+.badge-ticket {
+  background: #ebcc54;
+  color: white;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+.badge-count {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+.badge-payment {
+  background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+  color: #2d3436;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .admin-table {
+    font-size: 0.85rem;
+  }
+  
+  .admin-table thead th,
+  .admin-table tbody td {
+    padding: 0.8rem;
+  }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'main/base.html' %}
+{% block title %}Book Tickets - Evergrove Wildlife Park{% endblock %}
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div style="background: linear-gradient(135deg, #2d5016, #4a7c2c); padding: 4rem 0; margin-bottom: 3rem;">
+  <div class="container">
+    <div class="text-center text-white">
+      <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem;">Book Your Adventure</h1>
+      <p style="font-size: 1.3rem; opacity: 0.95;">Reserve your spot and create unforgettable memories</p>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING FORM -->
+<div class="container pb-5">
+  <div class="booking-form-container">
+    <h2>Visitor Information</h2>
+    
+    <form method="POST" id="bookingForm">
+      {% csrf_token %}
+      
+      <div class="mb-4">
+        <label class="form-label">Full Name</label>
+        <input type="text" 
+               name="visitor_name" 
+               class="form-control" 
+               placeholder="Enter your full name"
+               pattern="[A-Z a-z]+"
+               title="Only alphabets are allowed. Please enter valid name"
+               oninvalid="this.setCustomValidity('Only alphabets are allowed in the name field.')"
+              oninput="this.setCustomValidity('')"
+               required>
+      </div>
+      
+      <div class="mb-4">
+        <label class="form-label">Contact Number</label>
+        <input type="text" 
+               name="contact_no" 
+               class="form-control" 
+               placeholder="Enter your contact number"
+               pattern="[0-9]{10}"
+               title="Please enter a valid 10-digit phone number"
+               oninvalid="this.setCustomValidity('Please Enter a valid 10-digit Phone number.')"
+              oninput="this.setCustomValidity('')"
+               required>
+      </div>
+      
+      <div class="mb-4">
+        <label class="form-label">Visit Date</label>
+        <input type="date" 
+               name="visit_date" 
+               class="form-control" 
+               min="{{ today }}"
+               required>
+      </div>
+      
+      <div class="mb-4">
+  <label class="form-label">Number of Visitors</label>
+  <input type="number"
+         name="visitor_count"
+         class="form-control"
+         min="1"
+         max="5"
+         value="1"
+         required>
+  <small class="text-muted">* Maximum 5 visitors per ticket</small>
+</div>
+
+      <div class="mb-4">
+        <label class="form-label">Select Tour Package</label>
+        <select name="package" class="form-select" required>
+          <option value="" disabled selected>Choose a package...</option>
+          {% for p in packages %}
+          <option value="{{ p.package_id }}">
+            {{ p.package_name }} — ₹{{ p.price }} 
+            {% if p.duration %}({{ p.duration }} hours){% endif %}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <!-- Package Details Display -->
+      <div id="packageDetails" style="display: none; background: #f8f9fa; padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem; border-left: 4px solid #4a7c2c;">
+        <h5 style="color: #2d5016; margin-bottom: 1rem;">Package Details</h5>
+        <p id="packageInfo" style="margin: 0; color: #666;"></p>
+      </div>
+      
+      <button type="submit" class="btn btn-success">
+        Confirm Booking
+      </button>
+    </form>
+  </div>
+  
+  <!-- INFO CARDS -->
+  <div class="row g-4 mt-5">
+    <div class="col-md-4">
+      <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🕐</div>
+        <h5 style="color: #2d5016; margin-bottom: 0.5rem;">Opening Hours</h5>
+        <p style="color: #666; margin: 0;">9:00 AM - 6:00 PM Daily</p>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎟️</div>
+        <h5 style="color: #2d5016; margin-bottom: 0.5rem;">Easy Booking</h5>
+        <p style="color: #666; margin: 0;">Instant confirmation via email</p>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 1rem;">👨‍👩‍👧‍👦</div>
+        <h5 style="color: #2d5016; margin-bottom: 0.5rem;">Family Friendly</h5>
+        <p style="color: #666; margin: 0;">Special packages for families</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM ENHANCEMENT SCRIPT -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Set minimum date to today
+  const dateInput = document.querySelector('input[name="visit_date"]');
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.setAttribute('min', today);
+  
+  // Package selection handler
+  const packageSelect = document.querySelector('select[name="package"]');
+  const packageDetails = document.getElementById('packageDetails');
+  const packageInfo = document.getElementById('packageInfo');
+  
+  packageSelect.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    if (selectedOption.value) {
+      packageInfo.textContent = selectedOption.text;
+      packageDetails.style.display = 'block';
+      packageDetails.style.animation = 'fadeInUp 0.5s ease';
+    } else {
+      packageDetails.style.display = 'none';
+    }
+  });
+  
+  // Form validation
+  const form = document.getElementById('bookingForm');
+  form.addEventListener('submit', function(e) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Processing...';
+  });
+  
+  // Add animation to form inputs on focus
+  document.querySelectorAll('.form-control, .form-select').forEach(input => {
+    input.addEventListener('focus', function() {
+      this.style.transform = 'scale(1.02)';
+    });
+    
+    input.addEventListener('blur', function() {
+      this.style.transform = 'scale(1)';
+    });
+  });
+});
+</script>
+
+{% endblock %}

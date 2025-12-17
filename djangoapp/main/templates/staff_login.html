@@ -1,0 +1,199 @@
+{% extends 'main/base.html' %}
+{% block title %}Staff Login - Evergrove Wildlife Park{% endblock %}
+{% block content %}
+
+<div style="min-height: 80vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a4d2e 0%, #2d6a4f 100%); margin: -1.5rem 0 0 0; padding: 2rem 0;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-5 col-lg-4">
+        <div class="login-card">
+          <!-- Logo/Icon -->
+          <div class="login-header">
+           
+            <h2>Staff Login</h2>
+            <p>Access the admin dashboard</p>
+          </div>
+
+          <!-- Messages -->
+          {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger" style="border-radius: 12px; margin-bottom: 1.5rem;">
+              {{ message }}
+            </div>
+            {% endfor %}
+          {% endif %}
+
+          <!-- Login Form -->
+          <form method="POST" id="loginForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+              <label class="form-label-modern">Staff ID</label>
+              <div class="input-icon-wrapper">
+                <span class="input-icon">👤</span>
+                <input type="text" 
+                       name="staff_id" 
+                       class="form-control-modern" 
+                       placeholder="Enter your staff ID"
+                       required
+                       autofocus>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label-modern">Password</label>
+              <div class="input-icon-wrapper">
+                <span class="input-icon">🔒</span>
+                <input type="password" 
+                       name="password" 
+                       class="form-control-modern" 
+                       placeholder="Enter your password"
+                       required>
+              </div>
+            </div>
+            
+            <button type="submit" class="btn-login">
+              Sign In
+            </button>
+          </form>
+
+          <!-- Footer -->
+          <div class="login-footer">
+            <a href="{% url 'visitor_home' %}" style="color: #52b788; text-decoration: none; font-weight: 500;">
+              ← Back to Visitor Site
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.login-card {
+  background: white;
+  border-radius: 25px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 0.6s ease;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: scaleIn 0.5s ease;
+}
+
+.login-header h2 {
+  color: #1a4d2e;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+
+.login-header p {
+  color: #666;
+  margin: 0;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label-modern {
+  display: block;
+  color: #1a4d2e;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.input-icon-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  z-index: 1;
+}
+
+.form-control-modern {
+  width: 100%;
+  padding: 0.9rem 1rem 0.9rem 3rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.form-control-modern:focus {
+  outline: none;
+  border-color: #52b788;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+  transform: translateY(-2px);
+}
+
+.btn-login {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #52b788 0%, #2d6a4f 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  box-shadow: 0 5px 15px rgba(82, 183, 136, 0.3);
+}
+
+.btn-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(82, 183, 136, 0.4);
+}
+
+.btn-login:active {
+  transform: translateY(0);
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+</style>
+
+{% endblock %}

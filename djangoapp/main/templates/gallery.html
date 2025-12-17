@@ -1,0 +1,177 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Gallery - Evergrove Wildlife Park{% endblock %}
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div style="background: linear-gradient(135deg, #2d5016, #4a7c2c); padding: 4rem 0; margin-bottom: 3rem;">
+  <div class="container">
+    <div class="text-center text-white">
+      <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem;">Wildlife Gallery</h1>
+      <p style="font-size: 1.3rem; opacity: 0.95;">Discover the beauty and diversity of our animal residents</p>
+    </div>
+  </div>
+</div>
+
+<!-- MASONRY GALLERY -->
+<div class="container pb-5">
+  <div class="masonry-gallery">
+    {% for a in animals %}
+      <div class="masonry-item">
+        <div class="gallery-image-card">
+
+          <img src="{% static 'main/animals/' %}{{ a.image }}" alt="{{ a.name }}"
+               onerror="this.src='https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=800'">
+
+          <div class="image-overlay">
+            <div class="image-title">{{ a.name }}</div>
+            <div class="image-species">{{ a.species }}</div>
+          </div>
+
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+  
+  {% if not animals %}
+  <div class="text-center py-5">
+    <p class="text-muted" style="font-size: 1.2rem;">No animals to display at the moment.</p>
+  </div>
+  {% endif %}
+  
+  <!-- CTA SECTION -->
+  <div class="text-center mt-5 pt-5">
+    <div style="background: linear-gradient(135deg, rgba(45, 80, 22, 0.05), rgba(127, 176, 105, 0.05)); padding: 3rem; border-radius: 25px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);">
+      <h3 style="font-weight: 700; color: #2d5016; margin-bottom: 1rem;">Want to see them in person?</h3>
+      <p style="font-size: 1.1rem; color: #666; margin-bottom: 2rem;">Book your tickets now and experience the magic of wildlife up close!</p>
+      <a href="{% url 'ticket_booking' %}" class="btn btn-success btn-lg" style="border-radius: 50px; padding: 1rem 3rem;">
+        Book Your Visit
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Masonry Gallery Layout */
+.masonry-gallery {
+  column-count: 3;
+  column-gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.6s ease;
+}
+
+.gallery-image-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+}
+
+.gallery-image-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.gallery-image-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.gallery-image-card:hover img {
+  transform: scale(1.1);
+}
+
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 70%, transparent 100%);
+  padding: 2rem 1.5rem 1.5rem;
+  transform: translateY(100%);
+  transition: transform 0.4s ease;
+}
+
+.gallery-image-card:hover .image-overlay {
+  transform: translateY(0);
+}
+
+.image-title {
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.image-species {
+    color: rgb(246, 242, 242);
+    font-size: 0.9rem;
+    opacity: 0.85;
+    margin-top: 3px;
+}
+
+.image-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .masonry-gallery {
+    column-count: 2;
+    column-gap: 1rem;
+  }
+  
+  .masonry-item {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .masonry-gallery {
+    column-count: 1;
+  }
+  
+  .gallery-image-card {
+    border-radius: 15px;
+  }
+  
+  .image-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger animation for gallery items */
+.masonry-item:nth-child(1) { animation-delay: 0.1s; }
+.masonry-item:nth-child(2) { animation-delay: 0.2s; }
+.masonry-item:nth-child(3) { animation-delay: 0.3s; }
+.masonry-item:nth-child(4) { animation-delay: 0.4s; }
+.masonry-item:nth-child(5) { animation-delay: 0.5s; }
+.masonry-item:nth-child(6) { animation-delay: 0.6s; }
+</style>
+
+{% endblock %}

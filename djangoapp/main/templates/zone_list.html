@@ -1,0 +1,130 @@
+{% extends 'main/base.html' %}
+{% block navbar %}
+{% endblock %}
+{% block title %}Zones - Admin{% endblock %}
+{% block content %}
+
+<!-- Admin Header -->
+<div style="background: linear-gradient(135deg, #1a3d1e, #234f24); padding: 2rem 0; margin-bottom: 2rem;">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 style="color: white; margin: 0; font-weight: 700; font-size: 2rem;">🗺️ Park Zones</h2>
+        <p style="color: rgba(255,255,255,0.8); margin: 0.5rem 0 0 0;">View all park zones and areas</p>
+      </div>
+      <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-light" style="border-radius: 25px; padding: 0.7rem 2rem;">
+        ← Back to Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <!-- Info Card -->
+  
+
+  <!-- Zones Table -->
+  <div class="admin-table-container">
+    <table class="admin-table">
+      <thead>
+  <tr>
+    <th style="width: 100px;">Zone ID</th>
+    <th>Zone Name</th>
+    <th>Supervisor</th>
+  </tr>
+</thead>
+
+      <tbody>
+  {% for zone in zones %}
+  <tr>
+    <td><span class="badge-id">{{ zone.zone_id }}</span></td>
+
+    <td><strong>{{ zone.zone_name }}</strong></td>
+
+    <td>
+      {% if zone.sup %}
+        {{ zone.sup.staff.staff_name }}
+      {% else %}
+        <span style="color: #999;">No supervisor</span>
+      {% endif %}
+    </td>
+  </tr>
+  {% empty %}
+  <tr>
+    <td colspan="3" style="text-align: center; padding: 3rem; color: #999;">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">🗺️</div>
+      No zones found.
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+
+    </table>
+  </div>
+</div>
+
+<style>
+.admin-table-container {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+.admin-table thead {
+ background: linear-gradient(135deg, #1a3d1e, #234f24);
+
+}
+
+.admin-table thead th {
+  padding: 1.2rem 1.5rem;
+  text-align: left;
+  font-weight: 600;
+  color: white;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.admin-table tbody tr:hover {
+  background: #fff5f8;
+  transform: scale(1.01);
+}
+
+.admin-table tbody td {
+  padding: 1.2rem 1.5rem;
+  color: #333;
+}
+
+.badge-id {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.badge-habitat {
+  background: linear-gradient(135deg, #a8edea, #fed6e3);
+  color: #2d3436;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+</style>
+
+{% endblock %}

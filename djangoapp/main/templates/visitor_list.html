@@ -1,0 +1,280 @@
+{% extends 'main/base.html' %}
+{% block navbar %}
+{% endblock %}
+{% block title %}Visitors - Admin{% endblock %}
+{% block content %}
+
+<!-- Admin Header -->
+<div style="background: linear-gradient(135deg, #1a3d1e, #234f24); padding: 2rem 0; margin-bottom: 2rem;">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 style="color: white; margin: 0; font-weight: 700; font-size: 2rem;">👨‍👩‍👧‍👦 Visitor Management</h2>
+        <p style="color: rgba(255,255,255,0.8); margin: 0.5rem 0 0 0;">View all registered visitors</p>
+      </div>
+      <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-light" style="border-radius: 25px; padding: 0.7rem 2rem;">
+        ← Back to Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <!-- Stats Card -->
+  <div style="background: linear-gradient(135deg, #1a3d1e, #234f24); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; color: white; box-shadow: 0 10px 30px rgba(250,112,154,0.2);">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="font-size: 2.5rem;">📊</div>
+      <div>
+        <h4 style="margin: 0 0 0.3rem 0;">Total Visitors: {{ visitors|length }}</h4>
+        <p style="margin: 0; opacity: 0.95;">All registered visitors in the system</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div style="background: white; padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
+    <input type="text" 
+           id="searchInput" 
+           placeholder="🔍 Search visitors by name or contact..." 
+           style="width: 100%; padding: 0.9rem 1.5rem; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease;"
+           onkeyup="searchVisitors()">
+  </div>
+
+  <!-- Visitors Table -->
+  <div class="admin-table-container">
+    <table class="admin-table" id="visitorsTable">
+      <thead>
+        <tr>
+          <th style="width: 100px;">Visitor ID</th>
+          <th>Name</th>
+          <th>Contact Number</th>
+          <th style="width: 150px; text-align: center;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for visitor in visitors %}
+        <tr class="visitor-row">
+          <td><span class="badge-visitor">#{{ visitor.visitor_id }}</span></td>
+          <td>
+            <strong class="visitor-name">{{ visitor.visitor_name }}</strong>
+          </td>
+          <td>
+            <span style="color: #667eea; font-weight: 500;" class="visitor-contact">
+              📞 {{ visitor.contact_no }}
+            </span>
+          </td>
+          <td style="text-align: center;">
+            <button class="btn-view" onclick="viewVisitorDetails({{ visitor.visitor_id }}, '{{ visitor.visitor_name }}', '{{ visitor.contact_no }}')" title="View Details">
+              👁️ View
+            </button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" style="text-align: center; padding: 3rem; color: #999;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+            No visitors found.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- No Results Message (Hidden by default) -->
+  <div id="noResults" style="display: none; text-align: center; padding: 3rem; background: white; border-radius: 15px; margin-top: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+    <p style="color: #999; font-size: 1.1rem;">No visitors match your search.</p>
+  </div>
+</div>
+
+<!-- Visitor Details Modal -->
+<div id="visitorModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
+  <div style="background: white; border-radius: 25px; padding: 2.5rem; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: slideIn 0.3s ease;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h3 style="margin: 0; color: #1a1a2e;">Visitor Details</h3>
+      <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999;">✕</button>
+    </div>
+    
+    <div style="margin-bottom: 1.5rem;">
+      <label style="color: #888; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Visitor ID</label>
+      <div style="font-size: 1.2rem; font-weight: 600; color: #667eea;" id="modalVisitorId"></div>
+    </div>
+    
+    <div style="margin-bottom: 1.5rem;">
+      <label style="color: #888; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Name</label>
+      <div style="font-size: 1.2rem; font-weight: 600; color: #1a1a2e;" id="modalVisitorName"></div>
+    </div>
+    
+    <div style="margin-bottom: 1.5rem;">
+      <label style="color: #888; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Contact Number</label>
+      <div style="font-size: 1.2rem; font-weight: 600; color: #1a1a2e;" id="modalVisitorContact"></div>
+    </div>
+    
+    <button onclick="closeModal()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 1rem;">
+      Close
+    </button>
+  </div>
+</div>
+
+<style>
+.admin-table-container {
+  background: white;
+  border-radius: 15px;
+  overflow-x: auto;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  min-width: 700px;
+}
+
+.admin-table thead {
+  background: linear-gradient(135deg, #1a3d1e, #234f24);
+}
+
+.admin-table thead th {
+  padding: 1.2rem 1.5rem;
+  text-align: left;
+  font-weight: 600;
+  color: white;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.admin-table tbody tr:hover {
+  background: #fff9f5;
+  transform: scale(1.01);
+}
+
+.admin-table tbody td {
+  padding: 1.2rem 1.5rem;
+  color: #333;
+}
+
+.badge-visitor {
+  background: linear-gradient(135deg, #1a3d1e, #234f24);
+  color: white;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+.btn-view {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.btn-view:hover {
+  background: #1976d2;
+  color: white;
+  transform: scale(1.05);
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: #fa709a;
+  box-shadow: 0 0 0 3px rgba(250, 112, 154, 0.1);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-table {
+    font-size: 0.85rem;
+  }
+  
+  .admin-table thead th,
+  .admin-table tbody td {
+    padding: 0.8rem;
+  }
+}
+</style>
+
+<script>
+// Search functionality
+function searchVisitors() {
+  const input = document.getElementById('searchInput');
+  const filter = input.value.toLowerCase();
+  const table = document.getElementById('visitorsTable');
+  const rows = table.getElementsByClassName('visitor-row');
+  const noResults = document.getElementById('noResults');
+  let visibleCount = 0;
+  
+  for (let i = 0; i < rows.length; i++) {
+    const name = rows[i].getElementsByClassName('visitor-name')[0].textContent.toLowerCase();
+    const contact = rows[i].getElementsByClassName('visitor-contact')[0].textContent.toLowerCase();
+    
+    if (name.includes(filter) || contact.includes(filter)) {
+      rows[i].style.display = '';
+      visibleCount++;
+    } else {
+      rows[i].style.display = 'none';
+    }
+  }
+  
+  // Show/hide no results message
+  if (visibleCount === 0 && filter !== '') {
+    noResults.style.display = 'block';
+  } else {
+    noResults.style.display = 'none';
+  }
+}
+
+// Modal functions
+function viewVisitorDetails(id, name, contact) {
+  document.getElementById('modalVisitorId').textContent = '#' + id;
+  document.getElementById('modalVisitorName').textContent = name;
+  document.getElementById('modalVisitorContact').textContent = contact;
+  document.getElementById('visitorModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('visitorModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// Close modal on outside click
+document.getElementById('visitorModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeModal();
+  }
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeModal();
+  }
+});
+</script>
+
+{% endblock %}

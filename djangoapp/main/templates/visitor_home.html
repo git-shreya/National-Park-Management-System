@@ -1,0 +1,108 @@
+{% extends 'main/base.html' %}
+{% block title %}Home - Evergrove Wildlife Park{% endblock %}
+{% block content %}
+
+<!-- HERO SECTION -->
+<div class="hero" style="background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1600');">
+  <div class="text-center text-white">
+    <h1 class="display-4">Welcome to Evergrove Wildlife Park</h1>
+    <p class="lead">Explore wildlife, habitats and adventures in nature's paradise</p>
+    <a href="{% url 'ticket_booking' %}" class="btn btn-warning btn-lg">Book Your Adventure</a>
+  </div>
+</div>
+
+<!-- FEATURES SECTION -->
+<div class="features-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Why Visit Evergrove?</h2>
+      <p>Experience the wonder of wildlife in their natural habitats</p>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4 col-lg-4 fade-in">
+        <div class="feature-card text-center">
+          <div class="feature-icon">🦁</div>
+          <h4>Diverse Wildlife</h4>
+          <p>Home to over 200 species from around the world, carefully preserved in naturalistic habitats.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4 col-lg-4 fade-in">
+        <div class="feature-card text-center">
+          <div class="feature-icon">🌿</div>
+          <h4>Conservation</h4>
+          <p>Leading efforts in wildlife conservation and environmental education for future generations.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4 col-lg-4 fade-in">
+        <div class="feature-card text-center">
+          <div class="feature-icon">🎫</div>
+          <h4>Guided Tours</h4>
+          <p>Expert-led tours providing unique insights into animal behavior and conservation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURED ANIMALS SECTION -->
+<div class="container py-5" style="margin-top: 3rem;">
+  <div class="section-header">
+    <h2>Meet Our Residents</h2>
+    <p>Get to know some of our amazing animals</p>
+  </div>
+  
+  <div class="row g-4 justify-content-center">
+    {% for animal in animals %}
+    <div class="col-md-6 col-lg-4 fade-in">
+      <div class="card gallery-card">
+        <img src="{{ animal.image_url }}" class="card-img-top" alt="{{ animal.animal_name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ animal.animal_name }}</h5>
+          <p class="card-text">
+            {% if animal.species %}
+              <strong>Species:</strong> {{ animal.species.common_name|default:"Lion" }}<br>
+            {% endif %}
+            {% if animal.health_status %}
+              <strong>Status:</strong> {{ animal.health_status }}
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <div class="text-center mt-5">
+    <a href="{% url 'gallery' %}" class="btn btn-success btn-lg" style="border-radius: 50px; padding: 1rem 3rem;">
+      View Full Gallery
+    </a>
+  </div>
+</div>
+
+<!-- SCROLL ANIMATION SCRIPT -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Intersection Observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+  
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+  
+  document.querySelectorAll('.fade-in').forEach(el => {
+    observer.observe(el);
+  });
+});
+</script>
+
+{% endblock %}
