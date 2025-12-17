@@ -51,10 +51,11 @@ Developed using Django, HTML, CSS, and JavaScript.
 ![Admin Dashboard](screenshots/admin-dashboard.png)
 
 ### Ticket Booking
-![Ticket Booking](screenshots/ticket-booking.png)
+![Ticket Booking](screenshots/ticket-booking-1.png)
 
 ## Future Enhancements
 - Role-based access control
 - Online payment integration
 - Real-time analytics and reporting
 - Expansion of remaining ER entities
+
