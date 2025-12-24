@@ -1,1 +1,1 @@
-
+The django app files.
