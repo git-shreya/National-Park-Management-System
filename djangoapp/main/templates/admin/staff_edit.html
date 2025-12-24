@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+{% block title %}Edit Staff{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Edit Staff</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label class="form-label">Staff Name</label>
+            <input type="text" name="staff_name" class="form-control" value="{{ staff.staff_name }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Role</label>
+            <input type="text" name="staff_role" class="form-control" value="{{ staff.staff_role }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Contact No</label>
+            <input type="text" name="contact_no" class="form-control" value="{{ staff.contact_no }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" value="{{ staff.password }}" required>
+        </div>
+
+        <button class="btn btn-primary px-4">Update</button>
+        <a href="{% url 'staff_list' %}" class="btn btn-secondary px-4">Cancel</a>
+    </form>
+</div>
+{% endblock %}

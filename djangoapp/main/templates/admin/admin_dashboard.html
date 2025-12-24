@@ -1,0 +1,704 @@
+{% extends 'main/base.html' %}
+{% block title %}Admin Dashboard - Evergrove Wildlife Park{% endblock %}
+{% block content %}
+
+<!-- Light Admin Layout -->
+<div class="light-admin-wrapper">
+  <!-- Top Navigation -->
+  <nav class="light-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <span class="brand-icon">🏞️</span>
+        <span class="brand-text">Evergrove Wildlife Park</span>
+      </div>
+      
+      <div class="nav-menu">
+        <a href="{% url 'admin_dashboard' %}" class="nav-item active">Dashboard</a>
+        <a href="{% url 'staff_list' %}" class="nav-item">Staff</a>
+        <a href="{% url 'zone_list' %}" class="nav-item">Zones</a>
+        <a href="{% url 'habitat_list' %}" class="nav-item">Habitats</a>
+        <a href="{% url 'enclosure_list' %}" class="nav-item">Enclosures</a>
+        <a href="{% url 'ticket_list' %}" class="nav-item">Bookings</a>
+        <a href="{% url 'visitor_list' %}" class="nav-item">Visitors</a>
+      </div>
+      
+      <div class="nav-right">
+        <button class="icon-btn">⚙️</button>
+        <button class="icon-btn">🔔</button>
+        <div class="user-profile">
+          <img src="https://ui-avatars.com/api/?name={{ request.session.staff_name|default:'Admin' }}&background=1a4d2e&color=fff" alt="Profile">
+          <div class="user-info">
+            <div class="user-name">{{ request.session.staff_name|default:'Admin' }}</div>
+            <div class="user-role">{{ request.session.staff_role|default:'Admin' }}</div>
+          </div>
+        </div>
+        <a href="{% url 'staff_logout' %}" class="btn-logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="light-content">
+    <div class="content-container">
+      <!-- Page Header -->
+      <div class="page-title-bar">
+        <h1>Dashboard</h1>
+       
+      </div>
+      
+      <!-- Stats Cards -->
+      <div class="stats-row">
+        <div class="stat-card stat-success">
+          <div class="stat-header">
+            <div class="stat-icon-circle green">🦁</div>
+            <a href="{% url 'admin_dashboard' %}" class="expand-btn">↗</a>
+          </div>
+          <div class="stat-title">Active Animals</div>
+          <div class="stat-number">{{ animal_count }}</div>
+          <div class="stat-subtitle">All healthy and monitored</div>
+        </div>
+        
+        <div class="stat-card stat-warning">
+          <div class="stat-header">
+            <div class="stat-icon-circle orange">🧬</div>
+            <a href="{% url 'admin_dashboard' %}" class="expand-btn">↗</a>
+          </div>
+          <div class="stat-title">Species Count</div>
+          <div class="stat-number">{{ species_count }}</div>
+          <div class="stat-subtitle">Across all habitats</div>
+        </div>
+        
+        <div class="stat-card stat-alert">
+          <div class="stat-header">
+            <div class="stat-icon-circle yellow">🌿</div>
+            <a href="{% url 'habitat_list' %}" class="expand-btn">↗</a>
+          </div>
+          <div class="stat-title">Total Habitats</div>
+          <div class="stat-number">{{ habitat_count }}</div>
+          <div class="stat-subtitle">Well maintained zones</div>
+        </div>
+        
+        <div class="stat-card stat-info">
+          <div class="stat-header">
+            <div class="stat-icon-circle blue">🎫</div>
+            <a href="{% url 'ticket_list' %}" class="expand-btn">↗</a>
+          </div>
+          <div class="stat-title">Tickets Sold</div>
+          <div class="stat-number">{{ ticket_count }}</div>
+          <div class="stat-subtitle">Revenue tracking active</div>
+        </div>
+      </div>
+      
+      <!-- Main Grid -->
+      <div class="dashboard-grid">
+        <!-- Recent Bookings -->
+        <div class="panel recent-panel">
+          <div class="panel-header">
+            <h3>Recent Bookings</h3>
+            <a href="{% url 'ticket_list' %}" class="expand-btn">↗</a>
+          </div>
+          
+          
+          
+          <div class="bookings-list">
+            {% for i in "12345" %}
+            <div class="booking-item">
+              <div class="booking-avatar">V{{ forloop.counter }}</div>
+              <div class="booking-info">
+                <div class="booking-name">Visitor #{{ ticket_count|add:forloop.counter }}</div>
+                <div class="booking-id">🎫 Ticket ID: TK-{{ ticket_count|add:forloop.counter|stringformat:"04d" }}</div>
+              </div>
+              <div class="booking-date">📅 {{ "now"|date:"M d" }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          
+          <a href="{% url 'ticket_list' %}" class="view-all-link">View All Bookings →</a>
+        </div>
+        
+        <!-- Staff Overview -->
+        <div class="panel actions-panel">
+          <div class="panel-header">
+            <h3>Staff Overview</h3>
+            <a href="{% url 'staff_list' %}" class="expand-btn">↗</a>
+          </div>
+          
+          <div class="staff-list">
+            <div class="staff-item">
+              <img src="https://ui-avatars.com/api/?name=Alice&background=52b788&color=fff" alt="Alice">
+              <div class="staff-info">
+                <div class="staff-name">Alice</div>
+                <div class="staff-count">Supervisor</div>
+              </div>
+              <div class="staff-role">Admin</div>
+            </div>
+            
+            <div class="staff-item">
+              <img src="https://ui-avatars.com/api/?name=Bob&background=2d6a4f&color=fff" alt="Bob">
+              <div class="staff-info">
+                <div class="staff-name">Bob</div>
+                <div class="staff-count">Guide</div>
+              </div>
+              <div class="staff-role">Staff</div>
+            </div>
+            
+            <div class="staff-item">
+              <img src="https://ui-avatars.com/api/?name=Charlie&background=40916c&color=fff" alt="Charlie">
+              <div class="staff-info">
+                <div class="staff-name">Charlie</div>
+                <div class="staff-count">Caretaker</div>
+              </div>
+              <div class="staff-role">Staff</div>
+            </div>
+            
+            <div class="staff-item">
+              <img src="https://ui-avatars.com/api/?name=David&background=74c69d&color=fff" alt="David">
+              <div class="staff-info">
+                <div class="staff-name">David</div>
+                <div class="staff-count"> Guide</div>
+              </div>
+              <div class="staff-role">Staff</div>
+            </div>
+          </div>
+          
+          <a href="{% url 'staff_list' %}" class="view-all-link">Manage All Staff →</a>
+          
+          
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+/* Hide default elements */
+body:has(.light-admin-wrapper) nav.navbar,
+body:has(.light-admin-wrapper) footer {
+  display: none;
+}
+
+body:has(.light-admin-wrapper) main {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Light Theme */
+.light-admin-wrapper {
+  background: #f8f9fa;
+  min-height: 100vh;
+  color: #1e293b;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Top Navigation */
+.light-nav {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.875rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.nav-container {
+  max-width: 100%;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #1a4d2e;
+}
+
+.brand-icon {
+  font-size: 1.5rem;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.nav-item {
+  padding: 0.625rem 1rem;
+  color: #64748b;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.nav-item:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.nav-item.active {
+  background: #1a4d2e;
+  color: #fff;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 1.125rem;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.user-profile:hover {
+  background: #f1f5f9;
+}
+
+.user-profile img {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #1e293b;
+}
+
+.user-role {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.btn-logout {
+  padding: 0.5rem 1rem;
+  background: #fee2e2;
+  color: #dc2626;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  background: #fecaca;
+}
+
+/* Main Content */
+.light-content {
+  padding: 2rem 0;
+}
+
+.content-container {
+  max-width: 100%;
+  padding: 0 2rem;
+}
+
+.page-title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.page-title-bar h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: #52b788;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background: #40916c;
+  transform: translateY(-1px);
+  color: white;
+}
+
+/* Stats Cards */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.2s;
+}
+
+.stat-card:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.stat-icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.stat-icon-circle.green { background: #d1f4e0; }
+.stat-icon-circle.orange { background: #fed7aa; }
+.stat-icon-circle.yellow { background: #fef3c7; }
+.stat-icon-circle.blue { background: #dbeafe; }
+
+.expand-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expand-btn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.stat-title {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.stat-subtitle {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1.5rem;
+}
+
+.panel {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.panel-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+}
+
+.tab-btn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.tab-btn.active {
+  background: #1a4d2e;
+  color: #fff;
+}
+
+/* Bookings List */
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.booking-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.2s;
+  border: 1px solid #e2e8f0;
+}
+
+.booking-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.booking-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #1a4d2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.booking-info {
+  flex: 1;
+}
+
+.booking-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+.booking-id {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-top: 0.125rem;
+}
+
+.booking-date {
+  font-size: 0.8125rem;
+  color: #64748b;
+  padding: 0.375rem 0.75rem;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Staff List */
+.staff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.staff-item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.2s;
+  border: 1px solid #e2e8f0;
+}
+
+.staff-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.staff-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.staff-info {
+  flex: 1;
+}
+
+.staff-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+.staff-count {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-top: 0.125rem;
+}
+
+.staff-role {
+  padding: 0.25rem 0.75rem;
+  background: #e2e8f0;
+  color: #475569;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+/* View All Link */
+.view-all-link {
+  display: block;
+  text-align: center;
+  padding: 0.75rem;
+  color: #1a4d2e;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s;
+  margin-top: 1rem;
+}
+
+.view-all-link:hover {
+  background: #f1f5f9;
+}
+
+/* Info Card */
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #d1f4e0;
+  border-radius: 8px;
+  border: 1px solid #b7e4c7;
+  margin-top: 1rem;
+}
+
+.info-icon {
+  font-size: 1.5rem;
+}
+
+.info-title {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.info-desc {
+  font-size: 0.8125rem;
+  color: #475569;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none;
+  }
+  
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .user-info {
+    display: none;
+  }
+  
+  .content-container {
+    padding: 0 1rem;
+  }
+}
+</style>
+
+{% endblock %}

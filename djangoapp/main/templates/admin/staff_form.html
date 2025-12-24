@@ -1,0 +1,192 @@
+{% extends 'main/base.html' %}
+{% block navbar %}
+{% endblock %}
+{% block title %}{{ title }} - Admin{% endblock %}
+{% block content %}
+
+<!-- Admin Header -->
+<div style="background: linear-gradient(135deg, #0b4f2e 0%, #1a4d2e 100%); padding: 2rem 0; margin-bottom: 2rem;">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 style="color: white; margin: 0; font-weight: 700; font-size: 2rem;">{{ title }}</h2>
+        <p style="color: rgba(255,255,255,0.8); margin: 0.5rem 0 0 0;">Fill in the staff information below</p>
+      </div>
+      <a href="{% url 'staff_list' %}" class="btn btn-outline-light" style="border-radius: 25px; padding: 0.7rem 2rem;">
+        ← Back to Staff List
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="admin-form-card">
+        <form method="POST" id="staffForm">
+          {% csrf_token %}
+          
+          <!-- Render Django form fields with custom styling -->
+          {% for field in form %}
+            <div class="form-group-modern">
+              <label class="form-label-admin">{{ field.label }}</label>
+              {% if field.field.widget.input_type == 'select' %}
+                {{ field }}
+              {% else %}
+                <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                       name="{{ field.name }}" 
+                       class="form-control-admin"
+                       value="{{ field.value|default:'' }}"
+                       {% if field.field.required %}required{% endif %}
+                       placeholder="Enter {{ field.label|lower }}">
+              {% endif %}
+              
+              {% if field.errors %}
+                <div class="field-error">
+                  {{ field.errors.0 }}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+          
+          <!-- Action Buttons -->
+          <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn-save">
+              💾 Save Staff
+            </button>
+            <a href="{% url 'staff_list' %}" class="btn-cancel">
+              Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.admin-form-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.5s ease;
+}
+
+.form-group-modern {
+  margin-bottom: 1.8rem;
+}
+
+.form-label-admin {
+  display: block;
+  color: #1a1a2e;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  font-size: 0.95rem;
+}
+
+.form-control-admin,
+.form-group-modern select,
+.form-group-modern input {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.form-control-admin:focus,
+.form-group-modern select:focus,
+.form-group-modern input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.field-error {
+  color: #f44336;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: #ffebee;
+  border-radius: 8px;
+}
+
+.btn-save {
+  flex: 1;
+  padding: 1rem;
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(67, 233, 123, 0.3);
+}
+
+.btn-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(67, 233, 123, 0.4);
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 1rem;
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  text-align: center;
+  display: block;
+}
+
+.btn-cancel:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-form-card {
+    padding: 1.5rem;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Add animation to form inputs
+  document.querySelectorAll('.form-control-admin, .form-group-modern select, .form-group-modern input').forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.style.transform = 'scale(1.01)';
+    });
+    
+    input.addEventListener('blur', function() {
+      this.parentElement.style.transform = 'scale(1)';
+    });
+  });
+});
+</script>
+
+{% endblock %}

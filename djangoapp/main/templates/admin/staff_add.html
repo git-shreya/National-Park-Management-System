@@ -1,0 +1,48 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Add Staff{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 2rem 0; margin-bottom: 2rem;">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 style="color: white; margin: 0; font-weight: 700; font-size: 2rem;">{{ title }}</h2>
+        <p style="color: rgba(255,255,255,0.8); margin: 0.5rem 0 0 0;">Fill in the staff information below</p>
+      </div>
+      <a href="{% url 'staff_list' %}" class="btn btn-outline-light" style="border-radius: 25px; padding: 0.7rem 2rem;">
+        ← Back to Staff List
+      </a>
+    </div>
+  </div>
+</div>
+<div class="container mt-5">
+   
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label class="form-label">Staff Name</label>
+            <input type="text" name="staff_name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Role</label>
+            <input type="text" name="staff_role" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Contact No</label>
+            <input type="text" name="contact_no" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Password (for login)</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+
+        <button class="btn btn-success px-4">Save</button>
+        <a href="{% url 'staff_list' %}" class="btn btn-secondary px-4">Cancel</a>
+    </form>
+</div>
+{% endblock %}

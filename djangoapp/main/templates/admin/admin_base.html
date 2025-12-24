@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Admin - Evergrove{% endblock %}</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'main/style.css' %}">
+</head>
+
+<body>
+
+<!-- =================== -->
+<!-- ADMIN NAVIGATION BAR -->
+<!-- =================== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container-fluid">
+
+    <a class="navbar-brand fw-bold" href="{% url 'admin_dashboard' %}">Evergrow Admin</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="adminNav">
+      <ul class="navbar-nav me-auto">
+
+        <li class="nav-item"><a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'staff_list' %}">Staff</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'zone_list' %}">Zones</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'habitat_list' %}">Habitats</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'enclosure_list' %}">Enclosures</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'ticket_list' %}">Bookings</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'visitor_list' %}">Visitors</a></li>
+
+      </ul>
+
+      <div class="d-flex">
+        <span class="me-3">{{ user.username }}</span>
+        <a href="{% url 'staff_logout' %}">Logout</a>
+
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- page content -->
+<main class="py-4">
+  {% block content %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
